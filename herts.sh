@@ -1,9 +1,13 @@
 #! /usr/bin/bash
 
-socket_proxy="ssh -D 1234 -o ServerAliveInterval=30 sread@star.herts.ac.uk -fN"
-port_forward="ssh -NfXY -t -o ServerAliveInterval=30 -L 2121:uhppc60:21 -L 2020:uhppc60:20 -L 2222:uhppc60:22 sread@star.herts.ac.uk"
-alias uhppc60="ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t sread@star.herts.ac.uk ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t uhppc60"
-alias uhhpc="ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t sread@uhhpc.herts.ac.uk"
+username=sread
+pcname=uhppc60
+socket="1234"
+
+socket_proxy="ssh -D $socket -o ServerAliveInterval=30 $username@star.herts.ac.uk -fN"
+port_forward="ssh -NfXY -t -o ServerAliveInterval=30 -L 2121:$pcname:21 -L 2020:$pcname:20 -L 2222:$pcname:22 $username@star.herts.ac.uk"
+alias hertslocal="ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t $username@star.herts.ac.uk ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t $pcname"
+alias uhhpc="ssh -XY -o ServerAliveInterval=30 -o TCPKeepAlive=yes -t $username@uhhpc.herts.ac.uk"
 
 function herts {
         if [ "$1" == "start" ]
