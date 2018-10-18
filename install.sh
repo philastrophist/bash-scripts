@@ -128,24 +128,24 @@ fi
 if jupyter --version; then
 	if [ ! -f "$HOME/.jupyter/jupyter_notebook.py" ]; then
 		jupyter notebook --generate-config
-		jupyter notebook password
-		if [[ "$(cat /proc/sys/kernel/hostname)" == *"uhppc"* ]]; then
-			echo -n "You are on a university machine, shall I setup jupyter remote access?[y/n]"
-			read -r do_jupyter
-			if [[ $do_jupyter = 'y' ]]; then
-				mkdir "$HOME/certficates"
-				mkdir "$HOME/certficates/jupyter"
-				openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "$HOME/certficates/jupyter/mykey.key" -out "$HOME/certficates/jupyter/mycert.pem"
-				echo "c.NotebookApp.certfile = $HOME/certficates/jupyter/mycert.pem" >> "$HOME/.jupyter/jupyter_notebook.py"
-				echo "c.NotebookApp.keyfile = $HOME/certficates/jupyter/mykey.key" >> "$HOME/.jupyter/jupyter_notebook.py"
-				echo "c.NotebookApp.ip = '*'" >> "$HOME/.jupyter/jupyter_notebook.py"
-				echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook.py"
-				echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook.py"
-				chmod +x jupyter_autostart.sh
-				echo "bash $SCRIPTPATH/jupyter_autostart.sh" >> "$HOME/.login"
-				echo "Jupyter notebook will start automatically on your work pc and can be accessed on any machine where this script has been run."
-				echo "You can access the jupyter notebook by running 'herts start'"
-			fi
+	fi
+	jupyter notebook password
+	if [[ "$(cat /proc/sys/kernel/hostname)" == *"uhppc"* ]]; then
+		echo -n "You are on a university machine, shall I setup jupyter remote access?[y/n]"
+		read -r do_jupyter
+		if [[ $do_jupyter = 'y' ]]; then
+			mkdir "$HOME/certficates"
+			mkdir "$HOME/certficates/jupyter"
+			openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "$HOME/certficates/jupyter/mykey.key" -out "$HOME/certficates/jupyter/mycert.pem"
+			echo "c.NotebookApp.certfile = " '"' "$HOME/certficates/jupyter/mycert.pem" '"' >> "$HOME/.jupyter/jupyter_notebook.py"
+			echo "c.NotebookApp.keyfile = " '"' "$HOME/certficates/jupyter/mykey.key" '"' >> "$HOME/.jupyter/jupyter_notebook.py"
+			echo "c.NotebookApp.ip = '*'" >> "$HOME/.jupyter/jupyter_notebook.py"
+			echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook.py"
+			echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook.py"
+			chmod +x jupyter_autostart.sh
+			echo "bash $SCRIPTPATH/jupyter_autostart.sh" >> "$HOME/.login"
+			echo "Jupyter notebook will start automatically on your work pc and can be accessed on any machine where this script has been run."
+			echo "You can access the jupyter notebook by running 'herts start'"
 		fi
 	fi
 else
