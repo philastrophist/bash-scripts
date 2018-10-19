@@ -185,7 +185,7 @@ fi
 
 echo -n "Shall I install code-review.sh?[y/n] "
 read -r code_review
-if [[ $code_review ]]; then
+if [[ $code_review == 'y' ]]; then
 	git clone https://github.com/herts-astrostudents/code-review.sh "$HOME/code-review.sh"
 	chmod +x "$HOME/code-review.sh/code-review.sh"
 	"$HOME/code-review.sh/code-review.sh" install
