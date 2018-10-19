@@ -15,10 +15,9 @@ touch "$HOME/.tcshrc"
 
 if [ ! -d "$HOME/.bash-git-prompt/" ]; then
   git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
-  ln -s Single_line_Minimalist_notime.bgptheme ~/.bash-git-prompt/Single_line_Minimalist_notime.bgptheme
+  cp "$SCRIPTPATH/Single_line_Minimalist_notime.bgptheme" ~/.bash-git-prompt/
 fi
 
-conda -V
 if conda -V; then
     echo "Conda already installed"
 else
