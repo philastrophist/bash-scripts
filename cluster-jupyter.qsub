@@ -6,7 +6,7 @@
 #PBS -l walltime=12:00:00
 
 XDG_RUNTIME_DIR=""
-port=9999 #$(shuf -i8000-9999 -n1)
+port=9998 #$(shuf -i8000-9999 -n1)
 node=$(hostname -s)
 user=$(whoami)
 cluster="uhhpc"
@@ -31,4 +31,5 @@ cluster="uhhpc"
 # "
 echo "ssh -NfXY -t -o ServerAliveInterval=30 -L ${port}:${node}:${port} ${user}@uhhpc.herts.ac.uk"
 source activate notebook
+echo "$node" > ~/.current_jupyter_node
 jupyter-notebook --no-browser --port=${port} --ip=${node}
