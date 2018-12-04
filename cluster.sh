@@ -21,10 +21,6 @@ function cluster {
             echo "Port: 1234"
             echo "Your jupyter notebooks will always be available at 'https://$UHPCNAME:9999'"
         elif [[ "$1" == "submit" ]]; then
-            if [ -z "$2" ]; then
-                echo "specify -l arguments for cluster submission"
-                return 1;
-            fi
             cd $SCRIPTPATH
             qsub -X cluster-jupyter.qsub "$2"
         else
