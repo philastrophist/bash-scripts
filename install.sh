@@ -3,6 +3,7 @@
 set -e
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+cd "$SCRIPTPATH"
 
 # get apps if not installed
 
@@ -125,7 +126,7 @@ else
 fi
 
 if jupyter --version; then
-	if [ ! -f "$HOME/.jupyter/jupyter_notebook.py" ]; then
+	if [ ! -f "$HOME/.jupyter/jupyter_notebook_config.py" ]; then
 		jupyter notebook --generate-config
 	fi
 	jupyter notebook password
@@ -136,11 +137,11 @@ if jupyter --version; then
 			mkdir "$HOME/certficates"
 			mkdir "$HOME/certficates/jupyter"
 			openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "$HOME/certficates/jupyter/mykey.key" -out "$HOME/certficates/jupyter/mycert.pem"
-			echo "c.NotebookApp.certfile = " '"' "$HOME/certficates/jupyter/mycert.pem" '"' >> "$HOME/.jupyter/jupyter_notebook.py"
-			echo "c.NotebookApp.keyfile = " '"' "$HOME/certficates/jupyter/mykey.key" '"' >> "$HOME/.jupyter/jupyter_notebook.py"
-			echo "c.NotebookApp.ip = '*'" >> "$HOME/.jupyter/jupyter_notebook.py"
-			echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook.py"
-			echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook.py"
+			echo "c.NotebookApp.certfile = "'"'"$HOME/certficates/jupyter/mycert.pem"'"' >> "$HOME/.jupyter/jupyter_notebook_config.py"
+			echo "c.NotebookApp.keyfile = "'"'"$HOME/certficates/jupyter/mykey.key"'"' >> "$HOME/.jupyter/jupyter_notebook_config.py"
+			echo "c.NotebookApp.ip = '0.0.0.0'" >> "$HOME/.jupyter/jupyter_notebook_config.py"
+			echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook_config.py"
+			echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			chmod +x jupyter_autostart.sh
 			echo "bash $SCRIPTPATH/jupyter_autostart.sh" >> "$HOME/.login"
 			echo "Jupyter notebook will start automatically on your work pc and can be accessed on any machine where this script has been run."
@@ -151,7 +152,7 @@ else
 	echo "Jupyter is not installed skipping jupyter external setup. You will need to run this script on your work computer to get jupyter notebook access"
 fi
 
-echo -n "Shall I personalise git?[y/n] "
+echo -n "Shall I personalise git to your github username?[y/n] "
 read -r personal_git
 if [[ $personal_git == 'y' ]]; then
 	echo -n "Github email: "
@@ -163,12 +164,13 @@ if [[ $personal_git == 'y' ]]; then
 	git config --global user.name "$firstname $lastname"
 	git config --global user.email "$git_email"
 	git config --global core.editor nano 
+	echo "git has been personalised"
 fi
 
 if [[ ! -f "$HOME/.ssh/id_rsa.pub" ]]; then 
 	echo -n "Shall I add a new ssh key for passwordless ssh?[y/n] "
 	read -r keys
-	if [[ $keys ]]; then
+	if [[ -n $keys ]]; then
 		echo -n "What is your email? (this should be the same one you used with github) "
 		read -r email
 		ssh-keygen -t rsa -b 4096 -C "$email" -f "$HOME/.ssh/id_rsa.pub"
@@ -196,4 +198,5 @@ fi
 
 echo "The command libraries herts and project have been installed in bash and tcsh"
 echo "The command: project start/create/sync will not work in tcsh. This requires bash"
+echo "The command: uhppc will ssh into your work desktop"
 echo "You can use either bash or tcsh to work in now. However, bash is preferred by modern workflows."
