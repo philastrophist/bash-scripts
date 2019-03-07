@@ -1,5 +1,5 @@
 # bash-scripts
-Useful scripts: install with: `git clone https://github.com/herts-astrostudents/bash-scripts.git ~/.bash-scripts && bash ~/.bash-scripts/install.sh`
+Useful scripts: install with: `git clone https://github.com/herts-astrostudents/bash-scripts.git ~/.bash-scripts && cd ~/.bash-scripts && bash ./install.sh`
 
 # Includes:
 * Git setup for use with github
