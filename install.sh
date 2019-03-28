@@ -130,18 +130,22 @@ if jupyter --version; then
 		jupyter notebook --generate-config
 	fi
 	jupyter notebook password
-	if [[ "$(cat /proc/sys/kernel/hostname)" == *"uhppc"* ]]; then
+	hostname="$(echo "$HOSTNAME" || cat /proc/sys/kernel/hostname || echo '')"
+	if [[ "$hostname" == *"uhppc"* ]]; then
 		echo -n "You are on a university machine, shall I setup jupyter remote access?[y/n]"
 		read -r do_jupyter
 		if [[ $do_jupyter = 'y' ]]; then
-			mkdir "$HOME/certficates"
-			mkdir "$HOME/certficates/jupyter"
+			mkdir "$HOME/certficates" || echo "certficates folder exists, skipping"
+			mkdir "$HOME/certficates/jupyter" || echo "certficates folder exists, skipping"
 			openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "$HOME/certficates/jupyter/mykey.key" -out "$HOME/certficates/jupyter/mycert.pem"
 			echo "c.NotebookApp.certfile = "'"'"$HOME/certficates/jupyter/mycert.pem"'"' >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo "c.NotebookApp.keyfile = "'"'"$HOME/certficates/jupyter/mykey.key"'"' >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo "c.NotebookApp.ip = '0.0.0.0'" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook_config.py"
+			echo -n "In what absolute directory shall Jupyter start its notebooks?"
+			read -r notebook_dir
+			echo "c.NotebookApp.notebook_dir = $notebook_dir" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			chmod +x jupyter_autostart.sh
 			echo "bash $SCRIPTPATH/jupyter_autostart.sh" >> "$HOME/.login"
 			echo "Jupyter notebook will start automatically on your work pc and can be accessed on any machine where this script has been run."
@@ -188,12 +192,12 @@ fi
 echo -n "Shall I install code-review.sh?[y/n] "
 read -r code_review
 if [[ $code_review == 'y' ]]; then
-	git clone https://github.com/herts-astrostudents/code-review.sh "$HOME/code-review.sh"
+	git clone https://github.com/herts-astrostudents/code-review.sh "$HOME/code-review.sh" || echo "already installed"
 	chmod +x "$HOME/code-review.sh/code-review.sh"
 	"$HOME/code-review.sh/code-review.sh" install
 	echo -n "Where shall I put the code-review repository where you will fill in tasks? "
 	read -r review_dir
-	git clone https://github.com/herts-astrostudents/code-review "$review_dir/code-review"
+	git clone https://github.com/herts-astrostudents/code-review "$review_dir/code-review" || echo "already installed"
 fi
 
 echo "The command libraries herts and project have been installed in bash and tcsh"
