@@ -1,6 +1,22 @@
 #!/bin/bash
-
 set -e
+
+install_conda="$1"; shift
+version="$1"; shift
+username="$1"; shift
+pcname="$1"; shift
+do_jupyter="$1"; shift
+notebook_dir="$1"; shift
+personal_git="$1"; shift
+git_email="$1"; shift
+firstname="$1"; shift
+lastname="$1"; shift
+code_review="$1"; shift
+review_dir="$1"; shift
+keys="$1"; shift
+
+email="$git_email"
+
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "$SCRIPTPATH"
@@ -15,7 +31,7 @@ touch "$HOME/.bashrc"
 touch "$HOME/.tcshrc"
 
 if [ ! -d "$HOME/.bash-git-prompt/" ]; then
-  git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
+  git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1 || echo already installed
   cp "$SCRIPTPATH/Single_line_Minimalist_notime.bgptheme" ~/.bash-git-prompt/
 fi
 
@@ -31,12 +47,12 @@ else
 	# 	read install_conda
 	# else
 	echo -n "Install miniconda for personal use (you can choose where later)? [y/n]"
-	read -r install_conda
-	# fi
+	if [ -z ${install_conda+x} ]; then read -r install_conda; else echo "$install_conda"; fi
+	
 
     if [[ $install_conda = 'y' ]]; then
     	echo -n "Which python should I use as your default? 2 or 3:"
-    	read -r version
+    	if [ -z ${version+x} ]; then read -r version; else echo "$version"; fi
 	    unameOut="$(uname -s)"
 		case "${unameOut}" in
 		    Linux*)    
@@ -93,11 +109,11 @@ fi
 
 herts_string="source $SCRIPTPATH/herts.sh"
 echo -n "What is your work username?"
-read -r username 
+if [ -z ${username+x} ]; then read -r username; else echo "$username"; fi
 echo "setenv UHUSERNAME $username" >> ~/.tcshrc
 echo "export UHUSERNAME=$username" >> ~/.bashrc
 echo -n "What is your work pc name (something like uhppc60)?"
-read -r pcname
+if [ -z ${pcname+x} ]; then read -r pcname; else echo "$pcname"; fi
 echo "setenv UHPCNAME $pcname" >> ~/.tcshrc
 echo "export UHPCNAME=$pcname" >> ~/.bashrc
 
@@ -133,7 +149,7 @@ if jupyter --version; then
 	hostname="$(echo "$HOSTNAME" || cat /proc/sys/kernel/hostname || echo '')"
 	if [[ "$hostname" == *"uhppc"* ]]; then
 		echo -n "You are on a university machine, shall I setup jupyter remote access?[y/n]"
-		read -r do_jupyter
+		if [ -z ${do_jupyter+x} ]; then read -r do_jupyter; else echo "$do_jupyter"; fi
 		if [[ $do_jupyter = 'y' ]]; then
 			mkdir "$HOME/certficates" || echo "certficates folder exists, skipping"
 			mkdir "$HOME/certficates/jupyter" || echo "certficates folder exists, skipping"
@@ -144,7 +160,7 @@ if jupyter --version; then
 			echo "c.NotebookApp.open_browser = False" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo "c.NotebookApp.port = 9999" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			echo -n "In what absolute directory shall Jupyter start its notebooks?"
-			read -r notebook_dir
+			if [ -z ${notebook_dir+x} ]; then read -r notebook_dir; else echo "$notebook_dir"; fi
 			echo "c.NotebookApp.notebook_dir = $notebook_dir" >> "$HOME/.jupyter/jupyter_notebook_config.py"
 			chmod +x jupyter_autostart.sh
 			echo "bash $SCRIPTPATH/jupyter_autostart.sh" >> "$HOME/.login"
@@ -157,7 +173,7 @@ else
 fi
 
 echo -n "Shall I personalise git to your github username?[y/n] "
-read -r personal_git
+if [ -z ${personal_git+x} ]; then read -r personal_git; else echo "$personal_git"; fi
 if [[ $personal_git == 'y' ]]; then
 	echo -n "Github email: "
 	read -r git_email
@@ -173,10 +189,10 @@ fi
 
 if [[ ! -f "$HOME/.ssh/id_rsa.pub" ]]; then 
 	echo -n "Shall I add a new ssh key for passwordless ssh?[y/n] "
-	read -r keys
+	if [ -z ${keys+x} ]; then read -r keys; else echo "$keys"; fi
 	if [[ -n $keys ]]; then
 		echo -n "What is your email? (this should be the same one you used with github) "
-		read -r email
+		if [ -z ${email+x} ]; then read -r email; else echo "$email"; fi
 		ssh-keygen -t rsa -b 4096 -C "$email" -f "$HOME/.ssh/id_rsa.pub"
 		eval "$(ssh-agent -s)" || echo agent already started
 		ssh-add "$HOME/.ssh/id_rsa"
@@ -190,13 +206,13 @@ if [[ ! -f "$HOME/.ssh/id_rsa.pub" ]]; then
 fi
 
 echo -n "Shall I install code-review.sh?[y/n] "
-read -r code_review
+if [ -z ${code_review+x} ]; then read -r code_review; else echo "$code_review"; fi
 if [[ $code_review == 'y' ]]; then
 	git clone https://github.com/herts-astrostudents/code-review.sh "$HOME/code-review.sh" || echo "already installed"
 	chmod +x "$HOME/code-review.sh/code-review.sh"
 	"$HOME/code-review.sh/code-review.sh" install
 	echo -n "Where shall I put the code-review repository where you will fill in tasks? "
-	read -r review_dir
+	if [ -z ${review_dir+x} ]; then read -r review_dir; else echo "$review_dir"; fi
 	git clone https://github.com/herts-astrostudents/code-review "$review_dir/code-review" || echo "already installed"
 fi
 

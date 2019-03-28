@@ -1,0 +1,17 @@
+language: python
+python:
+  - "2.7"
+  - "3.7"
+
+os:
+  - linux
+  - osx
+sudo: required
+
+
+install:
+  - chmod +x install.sh
+
+script:
+  - ./install.sh y "$(python -c "import sys; print('.'.join(map(str, sys.version_info[:2])))")" username uhppc00 y "$HOME" y "me@me.com" firstname lastname y $HOME y
+  - python ~/.jupyter/jupyter_notebook_config.py
