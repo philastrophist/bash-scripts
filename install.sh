@@ -83,20 +83,24 @@ else
 			prefix="$HOME/miniconda"
 			bash "$fname" -b -p $prefix
 			echo export PATH='$HOME'"$prefix/bin:"'$PATH' >> ~/.bashrc
-			source ~/.bashrc
-			ls -alt $prefix/bin
-			echo $PATH
 		else
 			sh "$fname"
 		fi
-		eval "$(register-python-argcomplete conda)"
-		conda install jupyter
 		conda_dir="$(dirname $(dirname $(which conda)))"
 		echo "source $conda_dir/etc/profile.d/conda.csh" >> ~/.tcshrc
 		echo "unsetenv PYTHONPATH" >> ~/.tcshrc
 		echo "unset PYTHONPATH" >> ~/.bashrc
 		echo "conda activate" >> ~/.bashrc
 		echo "conda activate" >> ~/.tcshrc
+
+		source ~/.bashrc
+		ls -alt $prefix/bin
+		echo $PATH
+		pip install argcomplete
+		activate-global-python-argcomplete
+		eval "$(register-python-argcomplete conda)"
+		conda install jupyter
+
 		echo "Conda has been installed and the base environment activated by default"
 		echo "You will need to source your tcshrc/bashrc files to make these changes now"
 		echo
