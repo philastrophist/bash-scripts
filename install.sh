@@ -80,8 +80,11 @@ else
 		wget "https://repo.continuum.io/miniconda/$fname"
 		chmod +x "$fname"
 		if [[ "$install_conda" = "yes-silent" ]]; then
-			bash "$fname" -b -p "$HOME/miniconda"
-			echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> ~/.bashrc
+			prefix="$HOME/miniconda"
+			bash "$fname" -b -p $prefix
+			echo export PATH='$HOME'"$prefix/bin:"'$PATH' >> ~/.bashrc
+			ls -alt $prefix
+			echo $PATH
 			source ~/.bashrc
 		else
 			sh "$fname"
