@@ -86,6 +86,7 @@ else
 		else
 			sh "$fname"
 		fi
+		source ~/.bashrc
 		conda_dir="$(dirname $(dirname $(which conda)))"
 		echo "source $conda_dir/etc/profile.d/conda.csh" >> ~/.tcshrc
 		echo "unsetenv PYTHONPATH" >> ~/.tcshrc
