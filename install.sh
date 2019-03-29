@@ -48,9 +48,8 @@ else
 	# else
 	echo -n "Install miniconda for personal use (you can choose where later)? [y/n]"
 	if [ -z ${install_conda+x} ]; then read -r install_conda; else echo "$install_conda"; fi
-	
 
-    if [[ $install_conda = 'y' ]]; then
+    if [[ $install_conda = *"y"* ]]; then
     	echo -n "Which python should I use as your default? 2 or 3:"
     	if [ -z ${version+x} ]; then read -r version; else echo "$version"; fi
 	    version="$(echo $version | head -c 1)"
@@ -80,7 +79,11 @@ else
 		fi
 		wget "https://repo.continuum.io/miniconda/$fname"
 		chmod +x "$fname"
-		sh "$fname"
+		if [[ "$install_conda" = "yes-silent" ]]; then
+			bash "$fname" -b -p "$HOME/miniconda"
+		else
+			sh "$fname"
+		fi
 		eval "$(register-python-argcomplete conda)"
 		conda install jupyter
 		conda_dir="$(dirname $(dirname $(which conda)))"
