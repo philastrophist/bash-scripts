@@ -81,6 +81,8 @@ else
 		chmod +x "$fname"
 		if [[ "$install_conda" = "yes-silent" ]]; then
 			bash "$fname" -b -p "$HOME/miniconda"
+			echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> ~/.bashrc
+			source ~/.bashrc
 		else
 			sh "$fname"
 		fi
