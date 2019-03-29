@@ -53,6 +53,7 @@ else
     if [[ $install_conda = 'y' ]]; then
     	echo -n "Which python should I use as your default? 2 or 3:"
     	if [ -z ${version+x} ]; then read -r version; else echo "$version"; fi
+	    version="$(echo $version | head -c 1)"
 	    unameOut="$(uname -s)"
 		case "${unameOut}" in
 		    Linux*)    
